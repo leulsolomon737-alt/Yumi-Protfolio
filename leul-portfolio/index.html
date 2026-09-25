@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<!--
+  ============================================================
+  LEUL SOLOMON — VIDEO EDITOR PORTFOLIO
+  ============================================================
+  This is the ONLY page of the site. Everything lives here.
+
+  HOW THIS FILE IS ORGANISED (scroll down and you'll hit these in order):
+    1. <head>        - fonts, title, link to the CSS file
+    2. Left rail     - the timeline ruler + timecode
+    3. Navigation    - top menu
+    4. #hero         - first screen
+    5. #showreel     - your main featured video
+    6. #work         - grid of your videos
+    7. #services     - what you offer
+    8. #process      - how you work
+    9. #about        - about you
+   10. #contact      - how people reach you
+   11. footer
+
+  ============================================================
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ===== EDIT ME: the text in the browser tab ===== -->
+  <title>Leul Solomon — Video Editor</title>
+
+  <!-- ===== EDIT ME: the description Google shows in search results ===== -->
+  <meta name="description" content="Leul Solomon is a short-form video editor and motion designer in Addis Ababa creating high-retention reels for brands and creators." />
+
+  <meta name="theme-color" content="#FAFAF8" />
+
+  <!-- Fonts. Archivo does the headlines and body text, IBM Plex Mono does the timecode. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Our stylesheet. All colours, spacing and layout live in css/style.css -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+  <div id="intro-overlay"><h1 id="intro-text">YUMI</h1></div>
+
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- Thin scrubber at the very top of the screen that fills as you scroll. -->
+  <div class="scrubber" aria-hidden="true"><span id="scrubberFill" class="scrubber__fill"></span></div>
+
+  <!-- Skip link: lets keyboard users jump past the menu. Invisible until focused. -->
+  <a class="skip-link" href="#hero">Skip to content</a>
+
+  <!--
+    ===== LEFT RAIL =====
+    The vertical timeline ruler. Purely decorative on mobile (it's hidden there).
+    The timecode number is written by JavaScript as you scroll.
+  -->
+  <aside class="rail" aria-hidden="true">
+    <div class="rail__ticks" id="railTicks"></div>
+    <div class="rail__playhead" id="railPlayhead"></div>
+    <div class="rail__timecode" id="railTimecode">00:00:00:00</div>
+  </aside>
+
+  <!--
+    ===== NAVIGATION =====
+    To rename a menu item, change the text between the <a> tags.
+    The href="#work" part must match the id="work" on the section it jumps to.
+  -->
+  <header class="nav" id="nav">
+    <a class="nav__mark" href="#hero">
+      <img src="images/portrait.jpg" alt="Leul Solomon Logo" class="nav__logo" />
+      <span class="nav__markName">Leul Solomon</span>
+      <span class="nav__markRole">Video editor</span>
+    </a>
+
+    <nav class="nav__links" id="navLinks" aria-label="Main">
+      <a href="#work">Work</a>
+      <a href="#services">Services</a>
+      <a href="#process">Process</a>
+      <a href="#about">About</a>
+      <a class="nav__cta" href="#contact">Start a project</a>
+    </nav>
+
+    <!-- Hamburger button, only visible on small screens -->
+    <button class="nav__toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks">
+      <span></span><span></span>
+      <span class="visually-hidden">Open menu</span>
+    </button>
+  </header>
+
+  <main>
+
+    <!--
+      ===== 1. HERO =====
+      The first thing anyone sees. Keep the headline short and plain.
+    -->
+    <section class="hero" id="hero">
+      <div class="hero__glow" aria-hidden="true"></div>
+
+      <!-- Corner brackets, like the safe-area marks in a camera viewfinder -->
+      <span class="bracket bracket--tl" aria-hidden="true"></span>
+      <span class="bracket bracket--br" aria-hidden="true"></span>
+
+      <div class="hero__inner" data-parallax="0.18">
+        <div class="hero__card">
+          <p class="tc hero__slate hero-reveal hero-reveal--1">
+            <span class="hero__statusDot" aria-hidden="true"></span>
+            REC &nbsp;•&nbsp; Addis Ababa, Ethiopia
+          </p>
+
+          <h1 class="hero__title hero-reveal hero-reveal--2">
+            <span class="mask"><span class="mask__inner">Short-Form Edits</span></span>
+            <span class="mask"><span class="mask__inner">Built for High</span></span>
+            <span class="mask"><span class="mask__inner">Retention.</span></span>
+          </h1>
+
+        <p class="hero__lede hero-reveal hero-reveal--3">
+          Custom 3D motion, UI animations, and narrative pacing for educational brands and creators.
+          Turning raw footage into un-skippable content from second zero.
+        </p>
+
+          <div class="hero__actions hero-reveal hero-reveal--4">
+            <a class="btn btn--solid" href="#work">See the work</a>
+            <a class="btn btn--ghost" href="#contact">Start a project</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero__cue" aria-hidden="true">
+        <span class="tc">Scroll</span>
+        <span class="hero__cueLine"></span>
+      </div>
+    </section>
+
+    <section class="impact-stats" aria-label="Impact metrics">
+      <div class="impact-stats__inner">
+        <div class="impact-stat">
+          <strong>4-Hour</strong>
+          <span>Rapid Rush Delivery</span>
+        </div>
+        <div class="impact-stat">
+          <strong>100% Custom</strong>
+          <span>After Effects Motion &amp; UI</span>
+        </div>
+        <div class="impact-stat">
+          <strong>High Retention</strong>
+          <span>Narrative Scripting Architecture</span>
+        </div>
+      </div>
+    </section>
+
+
+    <!--
+      ===== 2. WORK =====
+      Five short-form edits, all within the main grid.
+    -->
+    <section class="section work" id="work" data-clip="Selected work">
+      <div class="wrap">
+        <div class="head">
+          <h2 class="head__title">Selected work</h2>
+          <p class="head__note">Five short-form edits. All are part of the portfolio.</p>
+        </div>
+
+        <div class="filters" role="group" aria-label="Filter work">
+          <button class="filter is-active" data-filter="all">All</button>
+          <button class="filter" data-filter="short">Short-form</button>
+        </div>
+
+        <div class="grid work-grid" id="workGrid">
+
+          <article class="card" data-cat="short">
+            <div class="video-card">
+              <video autoplay loop muted playsinline width="100%" preload="auto" class="video-card__media">
+                <source src="videos/video 3.mp4" type="video/mp4" />
+              </video>
+              <button class="audio-toggle-btn" type="button">🔊 Click for Audio</button>
+            </div>
+            <div class="card__meta">
+              <h3 class="card__title">Client Promotional Ad — FarGo Education</h3>
+              <div class="card__tags">
+                <span>UI Motion Design</span>
+                <span>Graphic Overlays</span>
+                <span>CTA Animation</span>
+              </div>
+              <p class="card__line">Turned raw client talking-head footage into a clean promo with custom list cards and a high-converting Telegram CTA end screen.</p>
+            </div>
+          </article>
+
+          <article class="card" data-cat="short">
+            <div class="video-card">
+              <video autoplay loop muted playsinline width="100%" preload="auto" class="video-card__media">
+                <source src="videos/video 5.mp4" type="video/mp4" />
+              </video>
+              <button class="audio-toggle-btn" type="button">🔊 Click for Audio</button>
+            </div>
+            <div class="card__meta">
+              <h3 class="card__title">Rapid-Turnaround Promo Reel — FarGo Education (4-Hour Rush)</h3>
+              <div class="card__tags">
+                <span>Fast-Track Editing</span>
+                <span>Motion Tracking</span>
+                <span>Infographic Animation</span>
+              </div>
+              <p class="card__line">Delivered a fully edited TikTok promo within a strict 4-hour window, featuring tracked graphics and animated percentage charts.</p>
+            </div>
+          </article>
+
+          <article class="card" data-cat="short">
+            <div class="video-card">
+              <video autoplay loop muted playsinline width="100%" preload="auto" class="video-card__media">
+                <source src="videos/video 4.mp4" type="video/mp4" />
+              </video>
+              <button class="audio-toggle-btn" type="button">🔊 Click for Audio</button>
+            </div>
+            <div class="card__meta">
+              <h3 class="card__title">Advanced Motion Graphics — Rofi Edits Challenge</h3>
+              <div class="card__tags">
+                <span>3D Graphics</span>
+                <span>UI/UX Animation</span>
+                <span>Glassmorphism</span>
+                <span>Advanced SFX</span>
+              </div>
+              <p class="card__line">High-end visual overhaul featuring custom glassmorphism UI cards, 3D orbiting badges, line-art transitions, and multi-layered sound design.</p>
+            </div>
+          </article>
+
+          <article class="card" data-cat="short">
+            <div class="video-card">
+              <video autoplay loop muted playsinline width="100%" preload="auto" class="video-card__media">
+                <source src="videos/video 2.mp4" type="video/mp4" />
+              </video>
+              <button class="audio-toggle-btn" type="button">🔊 Click for Audio</button>
+            </div>
+            <div class="card__meta">
+              <h3 class="card__title">Podcast Visual Storytelling — 3D Motion Graphics</h3>
+              <div class="card__tags">
+                <span>Podcast Editing</span>
+                <span>3D Motion</span>
+                <span>Kinetic Text</span>
+              </div>
+              <p class="card__line">Simplified complex podcast points using custom 3D glowing triangle animations, camera zooms, and dynamic tracking.</p>
+            </div>
+          </article>
+
+          <article class="card" data-cat="short">
+            <div class="video-card">
+              <video autoplay loop muted playsinline width="100%" preload="auto" class="video-card__media">
+                <source src="videos/video 1.mp4" type="video/mp4" />
+              </video>
+              <button class="audio-toggle-btn" type="button">🔊 Click for Audio</button>
+            </div>
+            <div class="card__meta">
+              <h3 class="card__title">High-Retention Educational Reel — Talking-Head Overhaul</h3>
+              <div class="card__tags">
+                <span>Video Editing</span>
+                <span>Motion Graphics</span>
+                <span>Kinetic Typography</span>
+                <span>SFX</span>
+              </div>
+              <p class="card__line">Transformed raw educational footage into a high-pacing, viral short-form edit using custom text pop-ups and keyframed graphic overlays.</p>
+            </div>
+          </article>
+
+        </div>
+
+        <p class="grid__empty" id="gridEmpty" hidden>Nothing filed under that yet.</p>
+      </div>
+    </section>
+
+    <!-- A moving strip of text, like a film leader running past. -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track" id="marqueeTrack">
+        <span>Short-form</span><span class="dot"></span>
+        <span>Colour</span><span class="dot"></span>
+        <span>Sound design</span><span class="dot"></span>
+        <span>Motion graphics</span><span class="dot"></span>
+        <span>Subtitles</span><span class="dot"></span>
+        <span>Scripting</span><span class="dot"></span>
+      </div>
+    </div>
+
+
+    <!--
+      ===== 4. SERVICES =====
+      Two focused offers.
+    -->
+    <section class="section services" id="services" data-clip="Services">
+      <div class="wrap">
+        <div class="head">
+          <h2 class="head__title">What I do</h2>
+          <p class="head__note">Two focused ways people usually hire me.</p>
+        </div>
+
+        <div class="services-grid">
+          <div class="service-card">
+            <h3>Short-Form Editing &amp; Motion Design</h3>
+            <p>Custom 3D elements, kinetic typography, UI overlays, and layered sound design engineered for maximum retention across TikTok, Instagram, and Shorts.</p>
+          </div>
+          <div class="service-card">
+            <h3>Scripting &amp; Narrative Architecture</h3>
+            <p>Refining raw concepts, structuring hook-driven narratives, and polishing script pacing to hold viewer attention from second zero.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!--
+      ===== 5. PROCESS =====
+      This one IS a real sequence, so the numbers earn their place.
+    -->
+    <section class="section process" id="process" data-clip="Process">
+      <div class="wrap">
+        <div class="head">
+          <h2 class="head__title">How a job runs</h2>
+          <p class="head__note">Four steps, start to delivery.</p>
+        </div>
+
+        <div class="process-grid">
+          <div class="process-card"><span class="step-num">01</span><h4>Footage &amp; Briefing</h4><p>Send raw footage, scripts, and target goals.</p></div>
+          <div class="process-card"><span class="step-num">02</span><h4>Script &amp; Hook Pacing</h4><p>We refine narrative flow and hook structure.</p></div>
+          <div class="process-card"><span class="step-num">03</span><h4>Motion &amp; Audio Architecture</h4><p>Adding custom 3D graphics, UI cards, and SFX.</p></div>
+          <div class="process-card"><span class="step-num">04</span><h4>Final Delivery</h4><p>High-res export formatted for TikTok, Reels, and Shorts.</p></div>
+        </div>
+      </div>
+    </section>
+
+
+    <!--
+      ===== 6. ABOUT =====
+      Replace images/portrait.jpg with your own photo (same filename = no code change).
+    -->
+    <section class="section about" id="about" data-clip="About">
+      <div class="wrap about__grid">
+
+        <div class="about__portrait reveal" aria-label="Leul Solomon brand mark">
+          <img src="images/portrait.jpg" alt="Leul Solomon brand logo" loading="lazy"
+               onerror="this.closest('.about__portrait').classList.add('is-missing')" />
+          <span class="about__portraitNote tc">Brand mark pending</span>
+        </div>
+
+        <div class="about__text reveal">
+          <h2 class="head__title">About</h2>
+
+          <p>
+            I’m Leul—a short-form editor and motion designer based in Addis Ababa.
+          </p>
+          <p>
+            Most short-form editing relies on basic captions and jump cuts. I build visual retention systems for creators and educational brands: taking raw footage or dense ideas and engineering them into fast-paced reels using custom 3D motion, UI animations, and tight narrative pacing.
+          </p>
+          <p>
+            From script polish to high-speed rush turnarounds, I handle the full pipeline to make sure your content holds attention from second zero.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!--
+      ===== 7. CONTACT =====
+      No form, no backend. These are plain links: email, Telegram, socials.
+      Replace the addresses and usernames below with your real ones.
+    -->
+    <section class="section contact" id="contact" data-clip="Contact">
+      <div class="wrap">
+        <p class="tc contact__slate">Open for work</p>
+
+        <h2 class="contact__title">
+          <a href="mailto:leulsolomon737@gmail.com" target="_blank" rel="noopener noreferrer">leulsolomon737@gmail.com</a>
+        </h2>
+
+        <p class="contact__note">
+          Send the footage, the deadline and what the video is for. I reply within a day.
+        </p>
+
+        <ul class="contact__links">
+          <li><a href="https://t.me/Fwyumi" target="_blank" rel="noopener noreferrer">Telegram</a></li>
+          <li><a href="https://www.tiktok.com/@yumi.io1" target="_blank" rel="noopener noreferrer">TikTok</a></li>
+          <li><a href="https://www.instagram.com/yumi.0e/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="foot">
+    <div class="wrap foot__inner">
+      <span class="tc">© <span id="year">2026</span> Leul Solomon</span>
+      <div class="foot__links">
+        <a href="mailto:leulsolomon737@gmail.com" target="_blank" rel="noopener noreferrer">Email</a>
+        <a href="https://t.me/Fwyumi" target="_blank" rel="noopener noreferrer">Telegram</a>
+        <a href="https://www.tiktok.com/@yumi.io1" target="_blank" rel="noopener noreferrer">TikTok</a>
+        <a href="https://www.instagram.com/yumi.0e/" target="_blank" rel="noopener noreferrer">Instagram</a>
+      </div>
+    </div>
+  </footer>
+
+  <a href="https://t.me/Fwyumi" target="_blank" rel="noopener noreferrer" class="sticky-telegram-btn">💬 Message on Telegram</a>
+
+  <!-- All the behaviour: scroll animations, the timecode, filters, and particle canvas. -->
+  <script src="js/main.js"></script>
+</body>
+</html>

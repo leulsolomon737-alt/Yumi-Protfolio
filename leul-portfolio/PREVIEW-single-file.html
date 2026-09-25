@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<!--
+  ============================================================
+  LEUL SOLOMON — VIDEO EDITOR PORTFOLIO
+  ============================================================
+  This is the ONLY page of the site. Everything lives here.
+
+  HOW THIS FILE IS ORGANISED (scroll down and you'll hit these in order):
+    1. <head>        - fonts, title, link to the CSS file
+    2. Left rail     - the timeline ruler + timecode
+    3. Navigation    - top menu
+    4. #hero         - first screen
+    5. #showreel     - your main featured video
+    6. #work         - grid of your videos
+    7. #services     - what you offer
+    8. #process      - how you work
+    9. #about        - about you
+   10. #contact      - how people reach you
+   11. footer
+
+  WHERE TO PUT YOUR YOUTUBE VIDEOS:
+    Search this file for   data-yt="
+    Every one of those is a placeholder. Replace REPLACE_ME with
+    your YouTube video ID. Full instructions are in README.md.
+  ============================================================
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ===== EDIT ME: the text in the browser tab ===== -->
+  <title>Leul Solomon — Video Editor</title>
+
+  <!-- ===== EDIT ME: the description Google shows in search results ===== -->
+  <meta name="description" content="Leul Solomon is a video editor in Addis Ababa making short-form and long-form video that keeps people watching." />
+
+  <meta name="theme-color" content="#05100F" />
+
+  <!-- Fonts. Archivo does the headlines and body text, IBM Plex Mono does the timecode. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Our stylesheet. All colours, spacing and layout live in css/style.css -->
+  <style>
+/* ============================================================
+   STYLE.CSS — everything the site looks like
+   ============================================================
+   CONTENTS (use Ctrl+F / Cmd+F to jump to a heading)
+     1.  DESIGN TOKENS      <- colours, fonts and spacing live here
+     2.  RESET + BASE
+     3.  LAYOUT HELPERS
+     4.  LETTERBOX + SCRUBBER
+     5.  LEFT RAIL (timeline ruler)
+     6.  NAVIGATION
+     7.  HERO
+     8.  SECTION HEADINGS
+     9.  YOUTUBE PLAYER
+    10.  WORK GRID + FILTERS
+    11.  MARQUEE
+    12.  SERVICES
+    13.  PROCESS
+    14.  ABOUT
+    15.  CONTACT + FOOTER
+    16.  SCROLL ANIMATIONS
+    17.  RESPONSIVE (tablet + mobile)
+    18.  REDUCED MOTION
+
+   TO CHANGE ALL THE COLOURS ON THE SITE, edit section 1 only.
+   ============================================================ */
+
+
+/* ============================================================
+   1. DESIGN TOKENS
+   ============================================================ */
+:root {
+  /* ---- Colours ---- */
+  --ink:      #05100F;   /* page background, a black with a green cast     */
+  --surface:  #0B1A19;   /* panels sitting on top of the background        */
+  --line:     #17302E;   /* hairline borders                              */
+  --brand:    #0F6E6E;   /* YOUR BRAND COLOUR — fills, buttons            */
+  --glow:     #4FE3CE;   /* bright teal — links, hovers, anything small    */
+  --sand:     #E9B872;   /* the one warm accent. Use it rarely.            */
+  --text:     #EAF2F0;   /* main text                                     */
+  --muted:    #7F9A97;   /* secondary text                                */
+
+  /* ---- Type ---- */
+  --font:     "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:     "IBM Plex Mono", ui-monospace, "Courier New", monospace;
+
+  /* A type scale. clamp(min, preferred, max) = it grows with the screen. */
+  --fs-hero:  clamp(2.6rem, 8.5vw, 6.6rem);
+  --fs-h2:    clamp(1.9rem, 4.2vw, 3.1rem);
+  --fs-h3:    clamp(1.15rem, 1.9vw, 1.45rem);
+  --fs-lead:  clamp(1.05rem, 1.7vw, 1.3rem);
+  --fs-body:  1.0625rem;
+  --fs-tc:    0.7rem;    /* the small monospace labels */
+
+  /* ---- Spacing ---- */
+  --gutter:   clamp(1.25rem, 5vw, 4rem);
+  --rail-w:   72px;              /* width of the left timeline ruler */
+  --section-y: clamp(5rem, 12vh, 9rem);
+  --max:      1180px;            /* max content width */
+
+  /* ---- Motion ---- */
+  --ease:     cubic-bezier(0.22, 1, 0.36, 1);  /* slow-out, cinematic */
+  --slow:     900ms;
+}
+
+
+/* ============================================================
+   2. RESET + BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  /* stops the fixed nav from covering a section you jump to */
+  scroll-padding-top: 90px;
+}
+
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: var(--fs-body);
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1, h2, h3 { margin: 0; line-height: 1.02; font-weight: 800; letter-spacing: -0.025em; }
+p  { margin: 0 0 1em; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+img { max-width: 100%; display: block; }
+
+a { color: inherit; text-decoration: none; }
+
+/* Anyone tabbing with a keyboard must be able to see where they are. */
+:focus-visible {
+  outline: 2px solid var(--glow);
+  outline-offset: 3px;
+}
+
+/* The small monospace labels: timecode, tags, slate text. */
+.tc {
+  font-family: var(--mono);
+  font-size: var(--fs-tc);
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  margin: 0;
+}
+
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute; left: -9999px; top: 0; z-index: 999;
+  background: var(--brand); color: #fff; padding: .75rem 1rem;
+}
+.skip-link:focus { left: 0; }
+
+
+/* ============================================================
+   3. LAYOUT HELPERS
+   ============================================================ */
+.wrap {
+  width: 100%;
+  max-width: var(--max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section {
+  position: relative;
+  padding-block: var(--section-y);
+  /* leaves room for the fixed ruler on the left */
+  padding-left: var(--rail-w);
+  border-top: 1px solid var(--line);
+}
+
+/* The name of each section, printed sideways on the ruler. */
+.section::before {
+  content: attr(data-clip);
+  position: absolute;
+  left: 0; top: var(--section-y);
+  width: var(--rail-w);
+  font-family: var(--mono);
+  font-size: var(--fs-tc);
+  letter-spacing: 0.18em;
+  color: var(--muted);
+  writing-mode: vertical-rl;
+  opacity: .65;
+}
+
+
+/* ============================================================
+   4. LETTERBOX + SCRUBBER
+   ============================================================ */
+/* Two black bars that retract on load. See js/main.js -> letterbox open. */
+.letterbox {
+  position: fixed; left: 0; right: 0;
+  height: 50vh; background: #000; z-index: 200;
+  pointer-events: none;
+  transition: transform 1100ms var(--ease);
+}
+.letterbox--top    { top: 0;    transform: translateY(0); }
+.letterbox--bottom { bottom: 0; transform: translateY(0); }
+body.is-open .letterbox--top    { transform: translateY(-100%); }
+body.is-open .letterbox--bottom { transform: translateY(100%); }
+
+/* Thin progress bar across the very top. */
+.scrubber {
+  position: fixed; inset: 0 0 auto 0; height: 2px;
+  background: var(--line); z-index: 120;
+}
+.scrubber__fill {
+  display: block; height: 100%; width: 0%;
+  background: var(--glow);
+}
+
+
+/* ============================================================
+   5. LEFT RAIL (timeline ruler)
+   ============================================================ */
+.rail {
+  position: fixed; left: 0; top: 0; bottom: 0;
+  width: var(--rail-w);
+  border-right: 1px solid var(--line);
+  z-index: 90;
+  pointer-events: none;
+  background: linear-gradient(to right, rgba(15,110,110,.07), transparent);
+}
+
+.rail__ticks { position: absolute; inset: 0; }
+.rail__ticks span {
+  position: absolute; right: 0; height: 1px;
+  background: var(--line);
+}
+
+/* The moving playhead line. This is the one place the warm accent is used. */
+.rail__playhead {
+  position: absolute; right: 0; left: 0; top: 0; height: 1px;
+  background: var(--sand);
+  box-shadow: 0 0 12px rgba(233,184,114,.55);
+}
+
+.rail__timecode {
+  position: absolute; left: 50%; bottom: 1.6rem;
+  transform: translateX(-50%) rotate(180deg);
+  writing-mode: vertical-rl;
+  font-family: var(--mono);
+  font-size: var(--fs-tc);
+  letter-spacing: .12em;
+  color: var(--glow);
+}
+
+
+/* ============================================================
+   6. NAVIGATION
+   ============================================================ */
+.nav {
+  position: fixed; top: 0; left: var(--rail-w); right: 0;
+  z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem var(--gutter);
+  transition: background 400ms var(--ease), border-color 400ms var(--ease), padding 400ms var(--ease);
+  border-bottom: 1px solid transparent;
+}
+/* JS adds .is-stuck once you scroll past the hero. */
+.nav.is-stuck {
+  background: rgba(5,16,15,.82);
+  backdrop-filter: blur(14px);
+  border-bottom-color: var(--line);
+  padding-block: .7rem;
+}
+
+.nav__mark { display: flex; flex-direction: column; line-height: 1.15; }
+.nav__markName { font-weight: 700; letter-spacing: -0.02em; }
+.nav__markRole { font-family: var(--mono); font-size: var(--fs-tc); color: var(--muted); letter-spacing: .12em; }
+
+.nav__links { display: flex; align-items: center; gap: clamp(1rem, 2.4vw, 2rem); }
+.nav__links a { font-size: .95rem; color: var(--muted); transition: color 250ms; }
+.nav__links a:hover { color: var(--text); }
+/* JS adds .is-current to the link for the section you're looking at. */
+.nav__links a.is-current { color: var(--glow); }
+
+.nav__cta {
+  border: 1px solid var(--brand);
+  padding: .5rem .95rem;
+  color: var(--text) !important;
+  transition: background 300ms var(--ease), border-color 300ms;
+}
+.nav__cta:hover { background: var(--brand); }
+
+.nav__toggle {
+  display: none;
+  background: none; border: 1px solid var(--line);
+  width: 42px; height: 38px; cursor: pointer;
+  flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+}
+.nav__toggle span { display: block; width: 18px; height: 1.5px; background: var(--text); transition: transform 300ms var(--ease), opacity 200ms; }
+.nav__toggle[aria-expanded="true"] span:first-child { transform: translateY(3.25px) rotate(45deg); }
+.nav__toggle[aria-expanded="true"] span:nth-child(2) { transform: translateY(-3.25px) rotate(-45deg); }
+
+
+/* ============================================================
+   7. HERO
+   ============================================================ */
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex; align-items: center;
+  padding: 8rem var(--gutter) 6rem;
+  padding-left: calc(var(--rail-w) + var(--gutter));
+  overflow: hidden;
+}
+
+/* One soft light source. The only gradient on the page. */
+.hero__glow {
+  position: absolute; top: -18%; left: 8%;
+  width: min(70vw, 820px); aspect-ratio: 1;
+  background: radial-gradient(circle, rgba(15,110,110,.42), rgba(15,110,110,0) 66%);
+  filter: blur(18px);
+  pointer-events: none;
+}
+
+/* Viewfinder corner brackets */
+.bracket { position: absolute; width: 26px; height: 26px; opacity: .5; }
+.bracket--tl { top: 92px;  left: calc(var(--rail-w) + 1.25rem); border-top: 1px solid var(--glow);    border-left: 1px solid var(--glow); }
+.bracket--br { bottom: 92px; right: 1.5rem;                     border-bottom: 1px solid var(--glow); border-right: 1px solid var(--glow); }
+
+.hero__inner { position: relative; max-width: min(900px, 90vw); width: 100%; }
+.hero__slate { color: var(--glow); margin-bottom: 1.6rem; }
+
+.hero__title {
+  font-size: var(--fs-hero);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  margin-bottom: 1.6rem;
+}
+
+/* Each headline line sits inside a "mask" so it can slide up into view. */
+.mask { display: block; overflow: hidden; }
+.mask__inner {
+  display: block;
+  transform: translateY(110%);
+  transition: transform 1000ms var(--ease);
+}
+body.is-open .mask__inner { transform: translateY(0); }
+/* stagger the three lines */
+body.is-open .mask:nth-child(1) .mask__inner { transition-delay: 220ms; }
+body.is-open .mask:nth-child(2) .mask__inner { transition-delay: 330ms; }
+body.is-open .mask:nth-child(3) .mask__inner { transition-delay: 440ms; }
+
+.hero__lede {
+  max-width: 46ch;
+  font-size: var(--fs-lead);
+  color: var(--muted);
+  opacity: 0; transform: translateY(14px);
+  transition: opacity 800ms var(--ease) 700ms, transform 800ms var(--ease) 700ms;
+}
+.hero__actions {
+  display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 2rem;
+  opacity: 0; transform: translateY(14px);
+  transition: opacity 800ms var(--ease) 820ms, transform 800ms var(--ease) 820ms;
+}
+body.is-open .hero__lede,
+body.is-open .hero__actions { opacity: 1; transform: none; }
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  padding: .85rem 1.5rem;
+  font-weight: 600; font-size: .95rem;
+  transition: background 320ms var(--ease), color 320ms, border-color 320ms, transform 320ms var(--ease);
+}
+.btn--solid { background: var(--brand); color: #fff; }
+.btn--solid:hover { background: var(--glow); color: var(--ink); transform: translateY(-2px); }
+.btn--ghost { border: 1px solid var(--line); color: var(--text); }
+.btn--ghost:hover { border-color: var(--glow); color: var(--glow); transform: translateY(-2px); }
+
+.hero__cue {
+  position: absolute; bottom: 2.2rem; right: var(--gutter);
+  display: flex; align-items: center; gap: .8rem;
+}
+.hero__cueLine {
+  width: 56px; height: 1px; background: var(--line); position: relative; overflow: hidden;
+}
+.hero__cueLine::after {
+  content: ""; position: absolute; inset: 0; background: var(--glow);
+  transform: translateX(-100%);
+  animation: cue 2.4s var(--ease) infinite;
+}
+@keyframes cue {
+  0%   { transform: translateX(-100%); }
+  55%  { transform: translateX(0); }
+  100% { transform: translateX(100%); }
+}
+
+
+/* ============================================================
+   8. SECTION HEADINGS
+   ============================================================ */
+.head { margin-bottom: clamp(2.2rem, 5vw, 3.4rem); max-width: 54ch; }
+.head__title { font-size: var(--fs-h2); }
+.head__note { color: var(--muted); margin-top: .9rem; }
+
+
+/* ============================================================
+   9. YOUTUBE PLAYER
+   ============================================================
+   The .player div starts as a thumbnail with a play button.
+   The real YouTube iframe is only loaded when it's clicked,
+   which keeps the page fast. Built by js/main.js.
+   ============================================================ */
+.player {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  overflow: hidden;
+  cursor: pointer;
+}
+.player--wide { border-color: var(--brand); }
+
+.player__thumb {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: saturate(.75) contrast(1.05);
+  transition: transform 900ms var(--ease), filter 600ms var(--ease);
+}
+.player:hover .player__thumb { transform: scale(1.04); filter: saturate(1) contrast(1); }
+
+.player__veil {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(5,16,15,.75), rgba(5,16,15,.15) 55%);
+}
+
+.player__btn {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: 64px; height: 64px;
+  display: grid; place-items: center;
+  background: rgba(15,110,110,.9);
+  border: none;
+  cursor: pointer;
+  transition: background 320ms var(--ease), transform 420ms var(--ease);
+}
+.player:hover .player__btn { background: var(--glow); transform: translate(-50%,-50%) scale(1.08); }
+.player__btn svg { width: 18px; height: 18px; fill: #fff; margin-left: 2px; }
+.player:hover .player__btn svg { fill: var(--ink); }
+
+.player__time {
+  position: absolute; right: .7rem; bottom: .7rem;
+  font-family: var(--mono); font-size: var(--fs-tc);
+  background: rgba(5,16,15,.85); color: var(--text);
+  padding: .2rem .45rem;
+}
+
+/* The state after you click: a real YouTube embed fills the box. */
+.player iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+/* Shown when data-yt is still REPLACE_ME */
+.player.is-empty { display: grid; place-items: center; cursor: default; }
+.player.is-empty .player__hint {
+  font-family: var(--mono); font-size: var(--fs-tc);
+  color: var(--muted); text-align: center; padding: 1rem; line-height: 1.8;
+}
+
+
+/* ============================================================
+   10. WORK GRID + FILTERS
+   ============================================================ */
+.filters { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 2rem; }
+.filter {
+  font-family: var(--mono); font-size: var(--fs-tc); letter-spacing: .12em;
+  background: none; border: 1px solid var(--line); color: var(--muted);
+  padding: .5rem .9rem; cursor: pointer;
+  transition: color 260ms, border-color 260ms, background 260ms;
+}
+.filter:hover { color: var(--text); border-color: var(--muted); }
+.filter.is-active { color: var(--ink); background: var(--glow); border-color: var(--glow); }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: clamp(1.2rem, 2.5vw, 2rem);
+}
+
+.card { display: flex; flex-direction: column; }
+.card.is-hidden { display: none; }
+.card__meta { padding-top: .9rem; border-top: 1px solid var(--line); margin-top: .9rem; }
+.card__title { font-size: var(--fs-h3); font-weight: 700; }
+.card__line { color: var(--muted); font-size: .9rem; margin: .35rem 0 0; }
+
+.grid__empty { color: var(--muted); margin-top: 2rem; }
+
+
+/* ============================================================
+   11. MARQUEE
+   ============================================================ */
+.marquee {
+  overflow: hidden;
+  border-block: 1px solid var(--line);
+  padding-block: 1.1rem;
+  padding-left: var(--rail-w);
+  background: var(--surface);
+}
+.marquee__track {
+  display: flex; align-items: center; gap: 2.5rem;
+  white-space: nowrap;
+  font-size: clamp(1.1rem, 2.4vw, 1.7rem);
+  font-weight: 600; letter-spacing: -0.02em;
+  color: var(--muted);
+  will-change: transform;
+}
+.marquee .dot { width: 5px; height: 5px; background: var(--brand); flex: none; }
+
+
+/* ============================================================
+   12. SERVICES
+   ============================================================ */
+.rows { border-top: 1px solid var(--line); }
+.row {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) 2.2fr auto;
+  gap: 1.5rem;
+  align-items: start;
+  padding-block: clamp(1.6rem, 3.5vw, 2.4rem);
+  border-bottom: 1px solid var(--line);
+  transition: background 400ms var(--ease);
+}
+.row:hover { background: rgba(15,110,110,.06); }
+.row__title { font-size: var(--fs-h3); font-weight: 700; }
+.row__body { color: var(--muted); margin: 0; max-width: 52ch; }
+.row__tag { white-space: nowrap; }
+
+
+/* ============================================================
+   13. PROCESS
+   ============================================================ */
+.steps { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.step { background: var(--ink); padding: clamp(1.4rem, 3vw, 2.2rem); }
+.step__num { color: var(--brand); display: block; margin-bottom: .9rem; }
+.step__title { font-size: var(--fs-h3); font-weight: 700; margin-bottom: .6rem; }
+.step__body { color: var(--muted); margin: 0; max-width: 60ch; }
+
+@media (min-width: 900px) {
+  .steps { grid-template-columns: repeat(4, 1fr); }
+}
+
+
+/* ============================================================
+   14. ABOUT
+   ============================================================ */
+.about__grid { display: grid; gap: clamp(2rem, 5vw, 4rem); align-items: start; }
+@media (min-width: 900px) {
+  .about__grid { grid-template-columns: 0.85fr 1.15fr; }
+}
+
+.about__portrait {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+.about__portrait img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(.25) contrast(1.05); }
+.about__portraitNote { display: none; position: absolute; inset: 0; place-content: center; text-align: center; padding: 1.5rem; }
+/* If the photo file is missing, show the hint instead of a broken image. */
+.about__portrait.is-missing img { display: none; }
+.about__portrait.is-missing .about__portraitNote { display: grid; }
+
+.about__text p { color: var(--muted); max-width: 58ch; }
+.about__text .head__title { margin-bottom: 1.4rem; }
+
+.stats { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); margin: 2.2rem 0 0; }
+@media (min-width: 620px) { .stats { grid-template-columns: repeat(3, 1fr); } }
+.stats > div { background: var(--ink); padding: 1.1rem 1.2rem; }
+.stats dt { margin-bottom: .4rem; }
+.stats dd { margin: 0; font-size: clamp(1.5rem, 3vw, 2.1rem); font-weight: 700; letter-spacing: -0.03em; color: var(--text); }
+
+
+/* ============================================================
+   15. CONTACT + FOOTER
+   ============================================================ */
+.contact { text-align: left; }
+.contact__slate { color: var(--glow); margin-bottom: 1.4rem; }
+.contact__title {
+  font-size: clamp(1.7rem, 6vw, 4rem);
+  letter-spacing: -0.04em;
+  word-break: break-word;
+}
+.contact__title a {
+  background-image: linear-gradient(var(--glow), var(--glow));
+  background-size: 0% 2px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  transition: background-size 600ms var(--ease), color 400ms;
+  padding-bottom: .1em;
+}
+.contact__title a:hover { background-size: 100% 2px; color: var(--glow); }
+
+.contact__note { color: var(--muted); max-width: 46ch; margin-top: 1.4rem; }
+
+.contact__links { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 2.2rem; }
+.contact__links a {
+  display: inline-block;
+  border: 1px solid var(--line);
+  padding: .6rem 1.1rem;
+  font-size: .92rem; color: var(--muted);
+  transition: color 300ms, border-color 300ms, transform 300ms var(--ease);
+}
+.contact__links a:hover { color: var(--glow); border-color: var(--glow); transform: translateY(-2px); }
+
+.foot { border-top: 1px solid var(--line); padding-block: 1.6rem; padding-left: var(--rail-w); }
+.foot__inner { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+
+
+/* ============================================================
+   16. SCROLL ANIMATIONS
+   ============================================================
+   Anything with class="reveal" starts hidden and wipes into view
+   when it scrolls onto the screen. js/main.js adds .is-in.
+   This is a wipe (like an edit transition), not a plain fade.
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(38px) scale(.985);
+  clip-path: inset(0 0 100% 0);
+  transition:
+    opacity      var(--slow) var(--ease),
+    transform    var(--slow) var(--ease),
+    clip-path    var(--slow) var(--ease);
+}
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+  clip-path: inset(0 0 0% 0);
+}
+/* Cards in the grid come in one after another. */
+.grid .reveal:nth-child(2) { transition-delay: 90ms; }
+.grid .reveal:nth-child(3) { transition-delay: 180ms; }
+.grid .reveal:nth-child(4) { transition-delay: 60ms; }
+.grid .reveal:nth-child(5) { transition-delay: 150ms; }
+.grid .reveal:nth-child(6) { transition-delay: 240ms; }
+
+.steps .reveal:nth-child(2) { transition-delay: 80ms; }
+.steps .reveal:nth-child(3) { transition-delay: 160ms; }
+.steps .reveal:nth-child(4) { transition-delay: 240ms; }
+
+
+/* ============================================================
+   17. RESPONSIVE
+   ============================================================ */
+
+/* ---- Tablet and below: shrink the rail ---- */
+@media (max-width: 1000px) {
+  :root { --rail-w: 52px; }
+  .row { grid-template-columns: 1fr; gap: .6rem; }
+  .row__tag { order: -1; }
+}
+
+/* ---- Mobile: hide the rail entirely, stack the nav ---- */
+@media (max-width: 760px) {
+  :root { --rail-w: 0px; }
+
+  .rail { display: none; }
+  .section { padding-left: 0; border-top: 1px solid var(--line); }
+  .section::before { display: none; }
+  .marquee, .foot { padding-left: 0; }
+  .hero { padding-left: var(--gutter); }
+  .bracket--tl { left: 1.25rem; }
+
+  .nav { left: 0; }
+
+  /* The menu becomes a panel that drops down when the hamburger is tapped. */
+  .nav__links {
+    position: fixed;
+    top: 66px; left: 0; right: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    background: rgba(5,16,15,.97);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--line);
+    padding: .5rem var(--gutter) 1.4rem;
+    /* hidden by default */
+    opacity: 0; visibility: hidden;
+    transform: translateY(-12px);
+    transition: opacity 320ms var(--ease), transform 360ms var(--ease), visibility 320ms;
+  }
+  .nav__links.is-open { opacity: 1; visibility: visible; transform: none; }
+  .nav__links a { padding: .85rem 0; width: 100%; border-bottom: 1px solid var(--line); font-size: 1.05rem; }
+  .nav__cta { border: 1px solid var(--brand); margin-top: 1rem; text-align: center; }
+
+  .nav__toggle { display: flex; }
+
+  .grid { grid-template-columns: 1fr; }
+  .hero__cue { display: none; }
+  .hero__inner { max-width: none; }
+}
+
+
+/* ============================================================
+   18. REDUCED MOTION
+   ============================================================
+   Some people turn animation off in their phone or computer
+   settings. We respect that: everything just appears.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+  .reveal { opacity: 1; transform: none; clip-path: none; }
+  .mask__inner { transform: none; }
+  .hero__lede, .hero__actions { opacity: 1; transform: none; }
+  .letterbox { display: none; }
+}
+
+</style>
+</head>
+
+<body>
+
+  <!-- Letterbox bars. These slide away on page load, like a film starting. -->
+  <div class="letterbox letterbox--top" aria-hidden="true"></div>
+  <div class="letterbox letterbox--bottom" aria-hidden="true"></div>
+
+  <!-- Thin scrubber at the very top of the screen that fills as you scroll. -->
+  <div class="scrubber" aria-hidden="true"><span id="scrubberFill" class="scrubber__fill"></span></div>
+
+  <!-- Skip link: lets keyboard users jump past the menu. Invisible until focused. -->
+  <a class="skip-link" href="#hero">Skip to content</a>
+
+  <!--
+    ===== LEFT RAIL =====
+    The vertical timeline ruler. Purely decorative on mobile (it's hidden there).
+    The timecode number is written by JavaScript as you scroll.
+  -->
+  <aside class="rail" aria-hidden="true">
+    <div class="rail__ticks" id="railTicks"></div>
+    <div class="rail__playhead" id="railPlayhead"></div>
+    <div class="rail__timecode" id="railTimecode">00:00:00:00</div>
+  </aside>
+
+  <!--
+    ===== NAVIGATION =====
+    To rename a menu item, change the text between the <a> tags.
+    The href="#work" part must match the id="work" on the section it jumps to.
+  -->
+  <header class="nav" id="nav">
+    <a class="nav__mark" href="#hero">
+      <span class="nav__markName">Leul Solomon</span>
+      <span class="nav__markRole">Video editor</span>
+    </a>
+
+    <nav class="nav__links" id="navLinks" aria-label="Main">
+      <a href="#work">Work</a>
+      <a href="#services">Services</a>
+      <a href="#process">Process</a>
+      <a href="#about">About</a>
+      <a class="nav__cta" href="#contact">Start a project</a>
+    </nav>
+
+    <!-- Hamburger button, only visible on small screens -->
+    <button class="nav__toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks">
+      <span></span><span></span>
+      <span class="visually-hidden">Open menu</span>
+    </button>
+  </header>
+
+  <main>
+
+    <!--
+      ===== 1. HERO =====
+      The first thing anyone sees. Keep the headline short and plain.
+    -->
+    <section class="hero" id="hero">
+      <div class="hero__glow" aria-hidden="true"></div>
+
+      <!-- Corner brackets, like the safe-area marks in a camera viewfinder -->
+      <span class="bracket bracket--tl" aria-hidden="true"></span>
+      <span class="bracket bracket--br" aria-hidden="true"></span>
+
+      <div class="hero__inner" data-parallax="0.18">
+        <p class="tc hero__slate">REC &nbsp;•&nbsp; Addis Ababa, Ethiopia</p>
+
+        <!-- ===== EDIT ME: your main headline ===== -->
+        <h1 class="hero__title">
+          <span class="mask"><span class="mask__inner">I cut video that</span></span>
+          <span class="mask"><span class="mask__inner">keeps people</span></span>
+          <span class="mask"><span class="mask__inner">watching.</span></span>
+        </h1>
+
+        <!-- ===== EDIT ME: the sentence under your headline ===== -->
+        <p class="hero__lede">
+          Short-form edits for brands and creators who need the first three seconds to
+          do their job. Long-form when the story needs room.
+        </p>
+
+        <div class="hero__actions">
+          <a class="btn btn--solid" href="#showreel">Watch the reel</a>
+          <a class="btn btn--ghost" href="#contact">Start a project</a>
+        </div>
+      </div>
+
+      <div class="hero__cue" aria-hidden="true">
+        <span class="tc">Scroll</span>
+        <span class="hero__cueLine"></span>
+      </div>
+    </section>
+
+
+    <!--
+      ===== 2. SHOWREEL =====
+      Your single best video, big and centred.
+      Replace REPLACE_ME below with your YouTube video ID.
+    -->
+    <section class="section showreel" id="showreel" data-clip="Showreel">
+      <div class="wrap">
+        <div class="head">
+          <h2 class="head__title">Showreel</h2>
+          <p class="head__note">The 60-second version of everything below.</p>
+        </div>
+
+        <!--
+          YOUTUBE PLACEHOLDER #1
+          data-yt   = the video ID from your YouTube link
+          data-time = the duration label shown in the corner (optional)
+        -->
+        <div class="player player--wide reveal"
+             data-yt="REPLACE_ME"
+             data-title="Showreel 2026"
+             data-time="1:04">
+        </div>
+      </div>
+    </section>
+
+
+    <!--
+      ===== 3. WORK =====
+      A grid of videos. Each .player is one video.
+      To add a video: copy one whole <article class="card"> block and paste it
+      below the last one, then change data-yt, the title and the category.
+      data-cat must match one of the filter buttons.
+    -->
+    <section class="section work" id="work" data-clip="Selected work">
+      <div class="wrap">
+        <div class="head">
+          <h2 class="head__title">Selected work</h2>
+          <p class="head__note">Six cuts. Filter by the kind of job.</p>
+        </div>
+
+        <!-- Filter buttons. To add a category, copy a button and change the text + data-filter. -->
+        <div class="filters" role="group" aria-label="Filter work">
+          <button class="filter is-active" data-filter="all">All</button>
+          <button class="filter" data-filter="short">Short-form</button>
+          <button class="filter" data-filter="ad">Ads</button>
+        </div>
+
+        <div class="grid" id="workGrid">
+
+          <!-- ---------- VIDEO 1 ---------- -->
+          <article class="card reveal" data-cat="short">
+            <div class="player" data-yt="REPLACE_ME" data-title="Course promo cutdown" data-time="0:38"></div>
+            <div class="card__meta">
+              <h3 class="card__title">Course promo cutdown</h3>
+              <p class="card__line">FarGo Education · vertical</p>
+            </div>
+          </article>
+
+          <!-- ---------- VIDEO 2 ---------- -->
+          <article class="card reveal" data-cat="short">
+            <div class="player" data-yt="REPLACE_ME" data-title="Hook test reel" data-time="0:22"></div>
+            <div class="card__meta">
+              <h3 class="card__title">Hook test reel</h3>
+              <p class="card__line">Personal · vertical</p>
+            </div>
+          </article>
+
+          <!-- ---------- VIDEO 3 ---------- -->
+          <article class="card reveal" data-cat="ad">
+            <div class="player" data-yt="REPLACE_ME" data-title="Product spot" data-time="0:30"></div>
+            <div class="card__meta">
+              <h3 class="card__title">Product spot</h3>
+              <p class="card__line">Retail · 16:9</p>
+            </div>
+          </article>
+
+          <!-- ---------- VIDEO 4 ---------- -->
+          <article class="card reveal" data-cat="short">
+            <div class="player" data-yt="REPLACE_ME" data-title="Tutorial series opener" data-time="0:45"></div>
+            <div class="card__meta">
+              <h3 class="card__title">Tutorial series opener</h3>
+              <p class="card__line">FarGo Education · vertical</p>
+            </div>
+          </article>
+
+        </div>
+
+        <p class="grid__empty" id="gridEmpty" hidden>Nothing filed under that yet.</p>
+      </div>
+    </section>
+
+
+    <!-- A moving strip of text, like a film leader running past. -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track" id="marqueeTrack">
+        <span>Short-form</span><span class="dot"></span>
+        <span>Colour</span><span class="dot"></span>
+        <span>Sound design</span><span class="dot"></span>
+        <span>Motion graphics</span><span class="dot"></span>
+        <span>Subtitles</span><span class="dot"></span>
+        <span>Scripting</span><span class="dot"></span>
+      </div>
+    </div>
+
+
+    <!--
+      ===== 4. SERVICES =====
+      Three rows separated by hairlines. Edit the text directly.
+    -->
+    <section class="section services" id="services" data-clip="Services">
+      <div class="wrap">
+        <div class="head">
+          <h2 class="head__title">What I do</h2>
+          <p class="head__note">Three ways people usually hire me.</p>
+        </div>
+
+        <div class="rows reveal">
+
+          <div class="row">
+            <h3 class="row__title">Short-form editing</h3>
+            <p class="row__body">
+              TikTok, Reels and Shorts built around the hook. Pacing, captions,
+              sound design and the cuts that stop a thumb.
+            </p>
+            <p class="tc row__tag">Vertical · 9:16</p>
+          </div>
+
+          <div class="row">
+            <h3 class="row__title">Long-form editing</h3>
+            <p class="row__body">
+              YouTube episodes, course lessons and recaps. Structure first, then
+              b-roll, graphics and a mix that holds up on phone speakers.
+            </p>
+            <p class="tc row__tag">Horizontal · 16:9</p>
+          </div>
+
+          <div class="row">
+            <h3 class="row__title">Scripting</h3>
+            <p class="row__body">
+              Writing the video before cutting it. Hook, beats and call to action,
+              handed over as a shot-ready script.
+            </p>
+            <p class="tc row__tag">Add-on</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!--
+      ===== 5. PROCESS =====
+      This one IS a real sequence, so the numbers earn their place.
+    -->
+    <section class="section process" id="process" data-clip="Process">
+      <div class="wrap">
+        <div class="head">
+          <h2 class="head__title">How a job runs</h2>
+          <p class="head__note">Four steps, start to delivery.</p>
+        </div>
+
+        <ol class="steps">
+          <li class="step reveal">
+            <span class="tc step__num">01</span>
+            <h3 class="step__title">Brief</h3>
+            <p class="step__body">You send footage, the goal and the platform. I come back with what I think the cut should be.</p>
+          </li>
+          <li class="step reveal">
+            <span class="tc step__num">02</span>
+            <h3 class="step__title">First cut</h3>
+            <p class="step__body">Structure and pacing only, no polish. This is where we agree on the shape before anyone spends time on details.</p>
+          </li>
+          <li class="step reveal">
+            <span class="tc step__num">03</span>
+            <h3 class="step__title">Polish</h3>
+            <p class="step__body">Colour, sound, captions, graphics. Two rounds of notes are included.</p>
+          </li>
+          <li class="step reveal">
+            <span class="tc step__num">04</span>
+            <h3 class="step__title">Delivery</h3>
+            <p class="step__body">Exported for the platform it's going to, with the project file if you want it.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+
+    <!--
+      ===== 6. ABOUT =====
+      Replace images/portrait.jpg with your own photo (same filename = no code change).
+    -->
+    <section class="section about" id="about" data-clip="About">
+      <div class="wrap about__grid">
+
+        <div class="about__portrait reveal">
+          <img src="images/portrait.jpg" alt="Leul Solomon" loading="lazy"
+               onerror="this.closest('.about__portrait').classList.add('is-missing')" />
+          <span class="about__portraitNote tc">Drop your photo at images/portrait.jpg</span>
+        </div>
+
+        <div class="about__text reveal">
+          <h2 class="head__title">About</h2>
+
+          <!-- ===== EDIT ME: your story ===== -->
+          <p>
+            I'm Leul, a video editor based in Addis Ababa. I edit every day for an
+            education brand, which means I've spent a lot of hours learning what
+            actually holds attention on a phone rather than what looks clever in
+            a timeline.
+          </p>
+          <p>
+            I work in short-form mostly, and I care about the unglamorous parts:
+            frame-accurate cuts, readable captions, audio that doesn't peak.
+            If a video needs a script before it needs an edit, I can write that too.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!--
+      ===== 7. CONTACT =====
+      No form, no backend. These are plain links: email, Telegram, socials.
+      Replace the addresses and usernames below with your real ones.
+    -->
+    <section class="section contact" id="contact" data-clip="Contact">
+      <div class="wrap">
+        <p class="tc contact__slate">Open for work</p>
+
+        <!-- ===== EDIT ME: replace the email in BOTH places on the next line ===== -->
+        <h2 class="contact__title">
+          <a href="mailto:hello@example.com">hello@example.com</a>
+        </h2>
+
+        <p class="contact__note">
+          Send the footage, the deadline and what the video is for. I reply within a day.
+        </p>
+
+        <ul class="contact__links">
+          <!-- ===== EDIT ME: your real profile links ===== -->
+          <li><a href="https://t.me/yourusername">Telegram</a></li>
+          <li><a href="https://www.tiktok.com/@yourusername">TikTok</a></li>
+          <li><a href="https://www.instagram.com/yourusername">Instagram</a></li>
+          <li><a href="https://www.youtube.com/@yourusername">YouTube</a></li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="foot">
+    <div class="wrap foot__inner">
+      <span class="tc">© <span id="year">2026</span> Leul Solomon</span>
+      <span class="tc">Built in Addis Ababa</span>
+    </div>
+  </footer>
+
+  <!-- All the behaviour: scroll animations, the timecode, filters, YouTube players. -->
+  <script>
+/* ============================================================
+   MAIN.JS — everything the site DOES
+   ============================================================
+   Plain JavaScript. No libraries, nothing to install.
+
+   CONTENTS
+     0. Setup
+     1. Page load (letterbox opens)
+     2. YouTube players
+     3. Left rail: ticks, playhead, timecode
+     4. Scroll: scrubber, sticky nav, active menu link
+     5. Hero parallax
+     6. Reveal on scroll
+     7. Counting numbers
+     8. Work filters
+     9. Marquee
+    10. Mobile menu
+    11. Footer year
+   ============================================================ */
+
+/* ============================================================
+   0. SETUP
+   ============================================================ */
+
+// Short helpers so we don't type document.querySelector everywhere.
+const $  = (selector, parent = document) => parent.querySelector(selector);
+const $$ = (selector, parent = document) => Array.from(parent.querySelectorAll(selector));
+
+// Does this person have "reduce motion" switched on in their device settings?
+const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+
+/* ============================================================
+   1. PAGE LOAD — the letterbox bars slide away
+   ============================================================
+   Adding the class "is-open" to <body> triggers every opening
+   animation at once (see css/style.css section 4 and 7).
+   ============================================================ */
+window.addEventListener('load', () => {
+  // A tiny delay so the fonts have a moment to land first.
+  setTimeout(() => document.body.classList.add('is-open'), prefersReduced ? 0 : 260);
+});
+
+
+/* ============================================================
+   2. YOUTUBE PLAYERS
+   ============================================================
+   Every <div class="player" data-yt="VIDEO_ID"> on the page gets
+   turned into a thumbnail with a play button.
+
+   The real YouTube player is NOT loaded until someone clicks.
+   That keeps the page fast and keeps YouTube's tracking off your
+   site until a visitor actually asks for the video.
+
+   TO ADD YOUR VIDEO: put the video ID in data-yt in index.html.
+   ============================================================ */
+
+function buildPlayer(box) {
+  const id    = box.dataset.yt;
+  const title = box.dataset.title || 'Video';
+  const time  = box.dataset.time  || '';
+
+  // Still a placeholder? Show a hint instead of a broken thumbnail.
+  if (!id || id === 'REPLACE_ME') {
+    box.classList.add('is-empty');
+    box.innerHTML = `<p class="player__hint">YOUTUBE PLACEHOLDER<br>
+      Open index.html and replace<br>data-yt="REPLACE_ME"<br>with your video ID</p>`;
+    return;
+  }
+
+  // YouTube generates thumbnails for every video at a fixed address.
+  // maxresdefault is the big one; hqdefault is the fallback if it doesn't exist.
+  box.innerHTML = `
+    <img class="player__thumb" alt="${title}" loading="lazy"
+         src="https://i.ytimg.com/vi/${id}/maxresdefault.jpg"
+         onerror="this.src='https://i.ytimg.com/vi/${id}/hqdefault.jpg'">
+    <span class="player__veil"></span>
+    <button class="player__btn" type="button" aria-label="Play ${title}">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    ${time ? `<span class="player__time">${time}</span>` : ''}
+  `;
+
+  // On click, swap the thumbnail for the real player.
+  box.addEventListener('click', () => {
+    box.innerHTML = `
+      <iframe
+        src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&playsinline=1"
+        title="${title}"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen></iframe>`;
+  }, { once: true });
+}
+
+$$('.player').forEach(buildPlayer);
+
+
+/* ============================================================
+   3. LEFT RAIL — ticks, playhead and timecode
+   ============================================================
+   The ruler on the left edge. The timecode counts up as you
+   scroll, like the playhead position in an editing timeline.
+   ============================================================ */
+
+const railTicks    = $('#railTicks');
+const railPlayhead = $('#railPlayhead');
+const railTimecode = $('#railTimecode');
+
+// Draw 40 small tick marks down the ruler, every 5th one longer.
+if (railTicks) {
+  const TICKS = 40;
+  let html = '';
+  for (let i = 0; i <= TICKS; i++) {
+    const isMajor = i % 5 === 0;
+    html += `<span style="top:${(i / TICKS) * 100}%; width:${isMajor ? 18 : 9}px; opacity:${isMajor ? 1 : .5}"></span>`;
+  }
+  railTicks.innerHTML = html;
+}
+
+// Turn a 0–1 scroll progress into a timecode string: HH:MM:SS:FF
+// We pretend the whole page is a 2-minute clip running at 24fps.
+function toTimecode(progress) {
+  const TOTAL_SECONDS = 120;
+  const FPS = 24;
+  const totalFrames = Math.floor(progress * TOTAL_SECONDS * FPS);
+  const frames  = totalFrames % FPS;
+  const seconds = Math.floor(totalFrames / FPS) % 60;
+  const minutes = Math.floor(totalFrames / (FPS * 60)) % 60;
+  const hours   = Math.floor(totalFrames / (FPS * 3600));
+  const pad = n => String(n).padStart(2, '0');
+  return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}:${pad(frames)}`;
+}
+
+
+/* ============================================================
+   4. SCROLL — scrubber, sticky nav, active menu link
+   ============================================================ */
+
+const scrubberFill = $('#scrubberFill');
+const nav          = $('#nav');
+const navAnchors   = $$('#navLinks a[href^="#"]');
+const sections     = $$('main section[id]');
+
+let lastScroll = 0;   // used by the marquee further down
+
+function onScroll() {
+  const y       = window.scrollY;
+  const height  = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = height > 0 ? Math.min(y / height, 1) : 0;
+
+  // a) the thin bar at the top fills up
+  if (scrubberFill) scrubberFill.style.width = (progress * 100) + '%';
+
+  // b) the playhead slides down the ruler + the timecode updates
+  if (railPlayhead) railPlayhead.style.top = (progress * 100) + '%';
+  if (railTimecode) railTimecode.textContent = toTimecode(progress);
+
+  // c) the nav gets a background once you leave the hero
+  if (nav) nav.classList.toggle('is-stuck', y > window.innerHeight * 0.6);
+
+  // d) highlight the menu link for whichever section you're looking at
+  let current = '';
+  sections.forEach(section => {
+    if (y >= section.offsetTop - 140) current = section.id;
+  });
+  navAnchors.forEach(a => {
+    a.classList.toggle('is-current', a.getAttribute('href') === '#' + current);
+  });
+
+  lastScroll = y;
+}
+
+// requestAnimationFrame keeps scrolling smooth by only doing this
+// work once per screen refresh instead of on every scroll event.
+let ticking = false;
+window.addEventListener('scroll', () => {
+  if (!ticking) {
+    window.requestAnimationFrame(() => { onScroll(); parallax(); ticking = false; });
+    ticking = true;
+  }
+}, { passive: true });
+
+
+/* ============================================================
+   5. HERO PARALLAX
+   ============================================================
+   Anything with data-parallax="0.18" drifts slower than the page.
+   A bigger number = more movement. 0 = no movement.
+   ============================================================ */
+
+const parallaxItems = $$('[data-parallax]');
+
+function parallax() {
+  if (prefersReduced) return;
+  const y = window.scrollY;
+  parallaxItems.forEach(el => {
+    const strength = parseFloat(el.dataset.parallax) || 0;
+    // only move it while it's still roughly on screen
+    if (y < window.innerHeight * 1.4) {
+      el.style.transform = `translate3d(0, ${y * strength}px, 0)`;
+    }
+  });
+}
+
+
+/* ============================================================
+   6. REVEAL ON SCROLL
+   ============================================================
+   IntersectionObserver watches elements and tells us the moment
+   they enter the screen. We add .is-in and CSS does the wipe.
+   To animate something new, just add class="reveal" to it.
+   ============================================================ */
+
+const revealItems = $$('.reveal');
+
+if (prefersReduced) {
+  revealItems.forEach(el => el.classList.add('is-in'));
+} else {
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-in');
+        revealObserver.unobserve(entry.target);   // animate once only
+      }
+    });
+  }, {
+    // fire when the element is 12% up from the bottom of the screen
+    rootMargin: '0px 0px -12% 0px',
+    threshold: 0.08
+  });
+
+  revealItems.forEach(el => revealObserver.observe(el));
+}
+
+
+/* ============================================================
+   7. COUNTING NUMBERS
+   ============================================================
+   <dd class="counter" data-count="120">0</dd> counts 0 -> 120
+   the first time it scrolls into view.
+   ============================================================ */
+
+const counters = $$('.counter');
+
+if (counters.length) {
+  const countObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const el     = entry.target;
+      const target = parseInt(el.dataset.count, 10) || 0;
+
+      if (prefersReduced) { el.textContent = target; countObserver.unobserve(el); return; }
+
+      const duration = 1400;
+      const start = performance.now();
+
+      function step(now) {
+        const t = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - t, 3);          // slows down at the end
+        el.textContent = Math.floor(eased * target);
+        if (t < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+
+      countObserver.unobserve(el);
+    });
+  }, { threshold: 0.6 });
+
+  counters.forEach(el => countObserver.observe(el));
+}
+
+
+/* ============================================================
+   8. WORK FILTERS
+   ============================================================
+   Clicking a filter button hides any card whose data-cat
+   doesn't match its data-filter.
+   ============================================================ */
+
+const filterButtons = $$('.filter');
+const cards         = $$('#workGrid .card');
+const gridEmpty     = $('#gridEmpty');
+
+filterButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    const want = button.dataset.filter;
+
+    // move the active highlight
+    filterButtons.forEach(b => b.classList.toggle('is-active', b === button));
+
+    let shown = 0;
+    cards.forEach(card => {
+      const match = (want === 'all' || card.dataset.cat === want);
+      card.classList.toggle('is-hidden', !match);
+      if (match) shown++;
+    });
+
+    if (gridEmpty) gridEmpty.hidden = shown !== 0;
+  });
+});
+
+
+/* ============================================================
+   9. MARQUEE
+   ============================================================
+   The strip of words that drifts sideways, and speeds up
+   while you're scrolling.
+   ============================================================ */
+
+const marqueeTrack = $('#marqueeTrack');
+
+if (marqueeTrack && !prefersReduced) {
+  // Duplicate the words so the loop never shows a gap.
+  marqueeTrack.innerHTML += marqueeTrack.innerHTML;
+
+  let offset = 0;
+  let lastY  = window.scrollY;
+
+  function driftMarquee() {
+    const half = marqueeTrack.scrollWidth / 2;
+
+    // base speed, plus a boost based on how fast you're scrolling
+    const scrollDelta = Math.abs(window.scrollY - lastY);
+    lastY = window.scrollY;
+
+    offset -= 0.4 + Math.min(scrollDelta * 0.25, 6);
+    if (Math.abs(offset) >= half) offset = 0;      // loop back around
+
+    marqueeTrack.style.transform = `translate3d(${offset}px,0,0)`;
+    requestAnimationFrame(driftMarquee);
+  }
+  requestAnimationFrame(driftMarquee);
+}
+
+
+/* ============================================================
+   10. MOBILE MENU
+   ============================================================ */
+
+const navToggle = $('#navToggle');
+const navLinks  = $('#navLinks');
+
+if (navToggle && navLinks) {
+  navToggle.addEventListener('click', () => {
+    const isOpen = navLinks.classList.toggle('is-open');
+    navToggle.setAttribute('aria-expanded', String(isOpen));
+  });
+
+  // close the menu after tapping a link
+  navAnchors.forEach(a => a.addEventListener('click', () => {
+    navLinks.classList.remove('is-open');
+    navToggle.setAttribute('aria-expanded', 'false');
+  }));
+}
+
+
+/* ============================================================
+   11. FOOTER YEAR — updates itself every January
+   ============================================================ */
+
+const yearEl = $('#year');
+if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+
+// Run the scroll logic once at startup so nothing looks wrong
+// if the page is reloaded halfway down.
+onScroll();
+
+</script>
+</body>
+</html>
