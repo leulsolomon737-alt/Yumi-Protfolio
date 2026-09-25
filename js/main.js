@@ -27,22 +27,10 @@ const $$ = (selector, parent = document) => Array.from(parent.querySelectorAll(s
 const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 window.addEventListener('DOMContentLoaded', () => {
-  const intro = $('#intro-overlay');
-  if (!intro || prefersReduced) {
-    document.body.classList.add('is-open', 'intro-complete');
-    if (intro) intro.remove();
-    return;
-  }
-
   setTimeout(() => {
-    intro.classList.add('fade-out');
-    document.body.classList.add('is-open', 'intro-complete');
-  }, 800);
-  setTimeout(() => {
-    intro.style.pointerEvents = 'none';
-    intro.style.display = 'none';
-    intro.remove();
-  }, 2300);
+    const intro = document.getElementById('intro-overlay');
+    if (intro) intro.style.display = 'none';
+  }, 3500);
 });
 
 /* ============================================================
@@ -229,8 +217,6 @@ if (counters.length) {
 const filterButtons = $$('.filter');
 const cards = $$('#workGrid .card');
 const gridEmpty = $('#gridEmpty');
-const videos = $$('#workGrid video');
-const audioButtons = $$('.audio-toggle-btn');
 
 filterButtons.forEach(button => {
   button.addEventListener('click', () => {
@@ -249,18 +235,30 @@ filterButtons.forEach(button => {
   });
 });
 
-audioButtons.forEach(button => {
-  button.addEventListener('click', () => {
-    const targetVideo = button.closest('.video-card').querySelector('video');
-    videos.forEach(otherVideo => {
-      otherVideo.muted = otherVideo !== targetVideo;
+document.querySelectorAll('.audio-toggle-btn').forEach((btn) => {
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const card = btn.closest('.video-card') || btn.closest('div') || btn.parentElement;
+    const video = card ? card.querySelector('video') : null;
+    if (!video) return;
+
+    const wasMuted = video.muted;
+
+    document.querySelectorAll('video').forEach((pageVideo) => {
+      pageVideo.muted = true;
     });
-    audioButtons.forEach(otherButton => {
-      if (otherButton !== button) otherButton.textContent = '🔊 Click for Audio';
+    document.querySelectorAll('.audio-toggle-btn').forEach((audioButton) => {
+      audioButton.innerText = '🔊 Click for Audio';
     });
-    targetVideo.muted = !targetVideo.muted;
-    button.textContent = targetVideo.muted ? '🔊 Click for Audio' : '🔊 Sound On (Click to Mute)';
-    targetVideo.play().catch(() => {});
+
+    if (wasMuted) {
+      video.muted = false;
+      video.volume = 1.0;
+      video.play().catch(() => {});
+      btn.innerText = '🔇 Mute Audio';
+    }
   });
 });
 

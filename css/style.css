@@ -110,29 +110,32 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  pointer-events: auto;
-  opacity: 1;
-  transition: opacity 1.2s ease-out, transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  animation: overlayFadeOut 3.5s cubic-bezier(0.7, 0, 0.2, 1) forwards;
 }
 
 #intro-text {
   color: #FAFAF8;
-  font-size: clamp(5rem, 14vw, 11rem);
+  font-size: clamp(6rem, 16vw, 12rem);
   font-weight: 900;
   letter-spacing: -0.04em;
   margin: 0;
-  transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 1s ease-out;
-  transform: scale(1);
+  animation: textZoomOut 3.5s cubic-bezier(0.7, 0, 0.2, 1) forwards;
 }
 
-#intro-overlay.fade-out {
-  opacity: 0;
-  transform: scale(1.08);
-  pointer-events: none;
+@keyframes textZoomOut {
+  0% { transform: scale(1.6); opacity: 1; }
+  50% { transform: scale(1.0); opacity: 1; }
+  80% { transform: scale(0.35); opacity: 0.6; }
+  100% { transform: scale(0.1); opacity: 0; }
 }
-#intro-overlay.fade-out #intro-text { transform: scale(0.6); opacity: 0; }
 
-main, header, footer, #intro-overlay, .scrubber, .rail {
+@keyframes overlayFadeOut {
+  0%, 70% { opacity: 1; }
+  100% { opacity: 0; visibility: hidden; }
+}
+
+main, header, footer, .scrubber, .rail {
   position: relative;
   z-index: 1;
 }
