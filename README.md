@@ -1,4 +1,4 @@
-# Leul Solomon — Portfolio Site
+# YUMI Studio — Portfolio Site
 
 A one-page portfolio for a video editor. Plain HTML, CSS and JavaScript.
 No build step, no frameworks, no backend.
@@ -8,7 +8,7 @@ No build step, no frameworks, no backend.
 ## 1. Folder structure
 
 ```
-leul-portfolio/
+portfolio/
 ├── index.html          All the page content and text
 ├── css/
 │   └── style.css       All colours, spacing, layout, animation styling
@@ -42,8 +42,8 @@ Four files. That's the whole site.
 2. Install and open it.
 
 **Open the project**
-1. Unzip the `leul-portfolio` folder somewhere you'll remember (Documents is fine).
-2. In VS Code: **File → Open Folder** → pick `leul-portfolio` → Open.
+1. Unzip the portfolio folder somewhere you'll remember (Documents is fine).
+2. In VS Code: **File → Open Folder** → pick the portfolio folder → Open.
 3. You should now see the file tree on the left.
 
 **Install one extension** (this is the only one you need)
@@ -84,9 +84,9 @@ To stop it: click **Port: 5500** in the blue bar at the bottom of VS Code.
 **Publishing the project**
 
 1. Open GitHub Desktop → **File → Add Local Repository** → choose your
-   `leul-portfolio` folder.
+  portfolio folder.
 2. It will say the folder isn't a repository yet and offer to **create one**. Click that.
-3. Name: `leul-portfolio`. Leave the rest as it is. Click **Create Repository**.
+3. Name the repository for the YUMI Studio site. Leave the rest as it is. Click **Create Repository**.
 4. In the bottom-left box, type a summary like `First version of the site`.
 5. Click **Commit to main**.
 6. Click **Publish repository** at the top. Uncheck "Keep this code private"
@@ -108,16 +108,15 @@ That's the whole loop: edit → save → commit → push.
 1. Go to https://vercel.com and click **Sign Up**.
 2. Choose **Continue with GitHub** and allow access.
 3. On your Vercel dashboard click **Add New… → Project**.
-4. Find `leul-portfolio` in the list and click **Import**.
+4. Find your portfolio repository in the list and click **Import**.
 5. Vercel will ask about a framework. Choose **Other**.
    Leave Build Command and Output Directory empty. This is a plain HTML
    site, so there is nothing to build.
 6. Click **Deploy** and wait about thirty seconds.
-7. You get a live address like `leul-portfolio.vercel.app`.
+7. You get a live Vercel address for the YUMI Studio site.
 
 **To change the address**: Project → Settings → Domains → edit.
-`leulsolomon.vercel.app` or `leuledits.vercel.app` are both available styles,
-as long as nobody has taken them.
+Choose an available YUMI-branded domain for the deployed site.
 
 **After this, deployment is automatic.** Every time you push to GitHub,
 Vercel rebuilds and updates the live site within a minute. You never touch
@@ -223,7 +222,7 @@ No code change needed. If you want a different filename, update this line
 in section 6 of `index.html`:
 
 ```html
-<img src="images/portrait.jpg" alt="Leul Solomon" ... />
+<img src="images/portrait.jpg" alt="YUMI Studio" ... />
 ```
 
 A vertical photo around 800×1000 pixels works best. Keep it under 400KB
